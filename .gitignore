@@ -1,0 +1,15 @@
+# Root .gitignore
+
+# Node.js folders
+**/node_modules/
+
+# Env files
+**/.env
+
+# Logs
+**/*.log
+
+# OS / IDE-specific
+.DS_Store
+.idea/
+.vscode/
