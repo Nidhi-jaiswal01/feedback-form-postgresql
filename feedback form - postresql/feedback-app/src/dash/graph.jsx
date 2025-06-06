@@ -4,6 +4,8 @@ import { LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PieChart, Pie, Cell, Legend, ResponsiveContainer  } from 'recharts';
 import { LineChart } from "lucide-react";
+import { CheckCircle } from "lucide-react";
+import { XCircle } from "lucide-react";
 
 
 function Dashboard() {
@@ -141,21 +143,20 @@ function Dashboard() {
           </Link>
         </li>
          <hr className="border-t border-gray-600  w-full" />
-                <li className="hover:text-orange-200 px-2 cursor-pointer rounded-md ml-1">
-  <Link to="/attend" className="flex items-center space-x-2 w-full">
-          <LineChart className="w-5 h-5" />
-          {sidebarOpen && <span>Attended</span>}
-          </Link>
-        </li>
-         <hr className="border-t border-gray-600  w-full" />
-                  <li className="hover:text-orange-200 px-2 cursor-pointer rounded-md ml-1">
-  <Link to="/notattend" className="flex items-center space-x-2 w-full">
-          <LineChart className="w-5 h-5" />
-          {sidebarOpen && <span>Not Attended</span>}
-          </Link>
-        </li>
-         <hr className="border-t border-gray-600  w-full" />
-
+      <li className="hover:text-orange-200 px-2 cursor-pointer rounded-md ml-1">
+                 <Link to="/attend" className="flex items-center space-x-2 w-full">
+                         <CheckCircle className="w-5 h-5" />
+                         {sidebarOpen && <span>Respondents</span>}
+                         </Link>
+                       </li>
+                        <hr className="border-t border-gray-600  w-full" />
+                                 <li className="hover:text-orange-200 px-2 cursor-pointer rounded-md ml-1">
+                 <Link to="/notattend" className="flex items-center space-x-2 w-full">
+                         <XCircle className="w-5 h-5" />
+                         {sidebarOpen && <span>Non Respondents</span>}
+                         </Link>
+                       </li>
+                        <hr className="border-t border-gray-600  w-full" />
          <li className="hover:text-orange-200 px-2 cursor-pointer rounded-md ml-1">
   <Link to="/login" className="flex items-center space-x-2 w-full">
     <LogOut className="w-5 h-5" />
