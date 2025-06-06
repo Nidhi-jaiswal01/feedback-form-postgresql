@@ -67,7 +67,7 @@ useEffect(() => {
       setEmail(currentEmail);
 
       // Fetch profiles, excluding email "jaiswal1@gmail.com"
-      const profilesRes = await fetch('/api/user');
+      const profilesRes = await fetch('/api/user/all');
       if (!profilesRes.ok) throw new Error("Failed to fetch profiles");
       let profilesData = await profilesRes.json();
 
@@ -142,7 +142,7 @@ useEffect(() => {
           </Link>
         </li>
          <hr className="border-t border-gray-600  w-full" />
-          <li className="hover:text-orange-200 px-2 cursor-pointer rounded-md ml-1">
+              <li className="hover:text-orange-200 px-2 cursor-pointer rounded-md ml-1">
   <Link to="/attend" className="flex items-center space-x-2 w-full">
           <LineChart className="w-5 h-5" />
           {sidebarOpen && <span>Attended</span>}
@@ -163,8 +163,6 @@ useEffect(() => {
   </Link>
 </li>
 <hr className="border-t border-gray-600 w-full" />
-
-      
       </ul>
     )}
   </div>
@@ -204,10 +202,10 @@ useEffect(() => {
 <div className="overflow-x-auto max-w-screen md:mx-10 mx-5 mt-4">
   <TableContainer component={Paper}>
        <div className="sm:min-w-[800px] min-w-[610px]  px-4 py-2">
-      <h1 className="font-bold mb-2">User Profile</h1>
-      <hr className="border-t border-gray-600" />
+      <h1 className="font-bold mb-2">Feedback Respondents</h1>
+      <hr className="border-t border-gray-600 " />
     </div>
-    <Table aria-label="user profile table">
+    <Table aria-label="Feedback Respondents table">
       <TableHead>
         <TableRow>
           <TableCell sx={{ fontWeight: 'bold' }}>Name</TableCell>
@@ -216,7 +214,6 @@ useEffect(() => {
           <TableCell sx={{ fontWeight: 'bold' }} align="right">DOB</TableCell>
           <TableCell sx={{ fontWeight: 'bold' }} align="right">Email</TableCell>
           <TableCell sx={{ fontWeight: 'bold' }} align="right">Phone</TableCell>
-           <TableCell sx={{ fontWeight: 'bold' }} align="right">Feedback Status</TableCell> 
         </TableRow>
       </TableHead>
       <TableBody>
@@ -228,13 +225,6 @@ useEffect(() => {
             <TableCell align="right">{profile.dob}</TableCell>
             <TableCell align="right">{profile.email}</TableCell>
             <TableCell align="right">{profile.phone}</TableCell>
-             <TableCell align="right">
-        {profile.has_submitted_feedback ? (
-          <span className="text-green-600 font-semibold">Submitted</span>
-        ) : (
-          <span className="text-red-600 font-semibold">Not Submitted</span>
-        )}
-      </TableCell>
           </TableRow>
         ))}
       </TableBody>

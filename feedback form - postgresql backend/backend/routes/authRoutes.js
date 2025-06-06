@@ -48,7 +48,7 @@ router.post(
       const newUser = await pool.query(
         `INSERT INTO users (email, password, name, dob, address, phone, Id, role)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-         RETURNING emp_id, id, email, name, dob, address, phone, Id, role, created_at`,
+         RETURNING automated_id, id, email, name, dob, address, phone, Id, role, created_at`,
         [email, hashedPassword, name, dob, address, phone, Id, role]
       );
 

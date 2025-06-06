@@ -11,6 +11,8 @@ import User from "./dash/user";
 import Feedbackr from "./dash/feedbackr";
 import Graph from "./dash/graph";
 import ProtectedRoute from "./protectedroute";
+import Attended from "./dash/attended";
+import NotAttended from "./dash/notattended";
 
 function App() {
   // Store user info (e.g., id, email, name) and token
@@ -108,6 +110,22 @@ function App() {
             </ProtectedRoute>
           }
         />
+         <Route
+          path="/attend"
+          element={
+            <ProtectedRoute user={user}>
+              <Attended onLogout={handleLogout} />
+            </ProtectedRoute>
+          }
+            />
+            <Route
+          path="/notattend"
+          element={
+            <ProtectedRoute user={user}>
+              <NotAttended onLogout={handleLogout} />
+            </ProtectedRoute>
+          }
+            />
       </Routes>
     </div>
   );

@@ -30,13 +30,58 @@ router.post('/login', async (req, res) => {
 // Get all users
 router.get('/', async (req, res) => {
   try {
-    const result = await pool.query('SELECT id, name, email, phone, address, dob FROM users');
+    const result = await pool.query(`SELECT 
+  u.id, u.name, u.email, u.phone, u.address, u.dob,
+  CASE WHEN f.email IS NOT NULL THEN true ELSE false END AS has_submitted_feedback
+FROM users u
+LEFT JOIN feedback f ON u.email = f.email
+`);
     res.json(result.rows);
   } catch (error) {
     console.error('Error fetching users:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+// Get all users and their feedback submission status
+router.get('/all', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        u.id, u.name, u.email, u.phone, u.address, u.dob,
+        CASE 
+          WHEN f.email IS NOT NULL THEN true
+          ELSE false
+        END AS has_submitted_feedback
+      FROM users u
+      LEFT JOIN feedback f ON u.email = f.email
+    `);
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching feedback status:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// GET /users/feedback-status/not-submitted
+router.get('/not', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT u.id, u.name, u.email, u.phone, u.address, u.dob
+      FROM users u
+      WHERE NOT EXISTS (
+        SELECT 1 FROM feedback f WHERE f.email = u.email
+      )
+    `);
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching non-submitters:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 // Get user by email
 router.get('/:email', async (req, res) => {
@@ -86,5 +131,6 @@ router.put('/:id', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 export default router;

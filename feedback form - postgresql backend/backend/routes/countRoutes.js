@@ -4,8 +4,13 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   try {
-    const userCountResult = await pool.query('SELECT COUNT(*) FROM users');
-    const feedbackCountResult = await pool.query('SELECT COUNT(*) FROM feedback');
+    const userCountResult = await pool.query(`SELECT COUNT(*) FROM users WHERE role != 'admin'`);
+    const feedbackCountResult = await pool.query(`
+      SELECT COUNT(*) 
+      FROM feedback f 
+      JOIN users u ON f.email = u.email 
+      WHERE u.role != 'admin'
+    `);
 
     const userCount = parseInt(userCountResult.rows[0].count, 10);
     const feedbackCount = parseInt(feedbackCountResult.rows[0].count, 10);

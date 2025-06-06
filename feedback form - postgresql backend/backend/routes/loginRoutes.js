@@ -47,7 +47,7 @@ router.post(
     try {
       // Query user by email selecting explicit fields including role
       const userResult = await pool.query(
-        'SELECT emp_id, id, name, email, phone, password, role FROM users WHERE email = $1',
+        'SELECT automated_id, id, name, email, phone, password, role FROM users WHERE email = $1',
         [email]
       );
 
