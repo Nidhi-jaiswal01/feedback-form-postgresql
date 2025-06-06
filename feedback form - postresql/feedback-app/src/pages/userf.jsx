@@ -109,13 +109,16 @@ useEffect(() => {
                               onClick={() => setDropdownOpen(false)} >
                               Feedback Form
                             </Link>
-                  <a
-                    href="/login"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                    onClick={() => setDropdownOpen(false)}
-                  >
-                    Log Out
-                  </a>
+                 <Link
+                                   to="/login"
+                                   onClick={() => {
+                                    localStorage.removeItem("token"); // ✅ Clear the old token
+                                     setDropdownOpen(false);           // 🔒 Close the dropdown
+                                      }}
+                                       className="block px-4 py-2 hover:bg-gray-100"
+                                        >
+                                        Log Out
+                                        </Link>
                 </div>
               )}
             </div>
@@ -203,12 +206,16 @@ useEffect(() => {
                                        onClick={() => setDropdownOpen(false)} >
                                        Feedback Form
                                      </Link>
-                  <a
-                    href="/login"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                    onClick={() => setDropdownOpen(false)} >
-                    Log Out
-                  </a>
+                 <Link
+                                   to="/login"
+                                   onClick={() => {
+                                    localStorage.removeItem("token"); // ✅ Clear the old token
+                                     setDropdownOpen(false);           // 🔒 Close the dropdown
+                                      }}
+                                       className="block px-4 py-2 hover:bg-gray-100"
+                                        >
+                                        Log Out
+                                        </Link>
                 </div>
               )}
             </li>
@@ -265,11 +272,11 @@ useEffect(() => {
   {/* Left Section with Two Gray Boxes */}
   <div className="flex flex-col w-full md:w-1/4 gap-4">
     {/* First Gray Box */} 
-    <div className="bg-gray-800 text-orange-50 p-6 rounded-md shadow-md flex justify-center items-center text-center ">
+    <div className="bg-gray-800 text-orange-50 p-6 rounded-md shadow-md flex justify-center items-center text-center">
         <img src="/account.png" alt="Company Logo" className="h-10 md:h-13 mr-3 w-auto"/>
         <div>
       <h3 className="font-semibold ">Welcome Back!</h3>
-      <p className="font-semibold ">
+      <p className="font-semibold">
          {Name}
     </p>
     </div>
@@ -315,17 +322,21 @@ useEffect(() => {
   </div>
 
   {/* Right Orange Box */}
-  <div className="w-full md:w-full bg-orange-50 text-black p-6 rounded-md shadow-md overflow-y-auto h-99">
+  <div className="w-full md:w-full bg-orange-50 text-black p-6 rounded-md shadow-md ">
                   {feedbacks.length === 0 ? (
-                    <p className="text-gray-500">No feedback submitted yet.</p>
+                    <p className="text-gray-500 ">No feedback submitted yet.</p>
                   ) : (
                     <ul className="space-y-4">
                       {feedbacks.map((item, index) => (
-                        <li key={index} className="border p-4 h-86 rounded">
+                        <li key={index} className="border overflow-y-auto p-4 h-86 rounded">
                           <p>
                             <span className="font-semibold ">Department:</span>{" "}
                             {item.category}
                           </p>
+                          <p className="mt-2">
+                    <span className="font-semibold">Feedback Id:</span>{" "}
+                    {item.id}
+                  </p>
                           <p className="mt-2 ">
                             <span className="font-semibold ">Email:</span>{" "} {item.email}
                           </p>
@@ -333,50 +344,50 @@ useEffect(() => {
                             <span className="font-semibold">Name:</span>{" "}{item.name}
                           </p>
                           <p className="mt-2 ">
-                      <span className="font-semibold hidden md:inline">
+                      <span className="font-semibold hidden lg:inline">
                        How are the food services in the company?:
                        </span>
-                       <span className="font-semibold md:hidden">
+                       <span className="font-semibold lg:hidden">
                         Food Services:
                          </span>{" "}
 
                         {item.foodservice}
                         </p>
                            <p className="mt-2">
-                      <span className="font-semibold hidden md:inline">
+                      <span className="font-semibold hidden lg:inline">
                               How do you feel about the level of recognition you receive
                               for your contributions?:
                             </span>
-                            <span className="font-semibold md:hidden">
+                            <span className="font-semibold lg:hidden">
                         level of Recognition:
                          </span>{" "}
                             {item.recognition}
                           </p>
                           <p className="mt-2">
-                      <span className="font-semibold hidden md:inline">
+                      <span className="font-semibold hidden lg:inline">
                               How would you rate the company's commitment to diversity
                               and inclusion?:
-                            </span><span className="font-semibold md:hidden">
+                            </span><span className="font-semibold lg:hidden">
                         company's commitment to diversity?:
                          </span>{" "}
                             {item.diversity}
                           </p>
                            <p className="mt-2 ">
-                      <span className="font-semibold hidden md:inline">
+                      <span className="font-semibold hidden lg:inline">
                               How would you rate the leadership provided by senior
                               management?:
                             </span>
-                            <span className="font-semibold md:hidden">
+                            <span className="font-semibold lg:hidden">
                         Leadership Provided?:
                          </span>{" "}
                             {item.leadership}
                           </p>
                           <p className="mt-2">
-                      <span className="font-semibold hidden md:inline">
+                      <span className="font-semibold hidden lg:inline">
                               How effective is the communication within your team and
                               across the company?:
                             </span>
-                            <span className="font-semibold md:hidden">
+                            <span className="font-semibold lg:hidden">
                         communication accross the company:
                          </span>{" "}
                             {item.communication}

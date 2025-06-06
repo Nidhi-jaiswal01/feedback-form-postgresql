@@ -8,7 +8,8 @@ router.post('/', async (req, res) => {
     const {
       email,
       name,
-      category,
+      userid,
+      category, // full department name (e.g., "Finance")
       communication,
       diversity,
       leadership,
@@ -17,16 +18,39 @@ router.post('/', async (req, res) => {
       message,
     } = req.body;
 
+    // Get current year and month
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(-2); // "24"
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // "06"
+
+    // Get first two uppercase letters of category
+    const deptCode = category.slice(0, 2).toUpperCase(); // "FI"
+
+    // Count how many feedbacks already exist in the same department/month
+    const countResult = await pool.query(
+      `SELECT COUNT(*) FROM feedback 
+       WHERE UPPER(SUBSTRING(category, 1, 2)) = $1 
+       AND TO_CHAR(created_at, 'YY-MM') = $2`,
+      [deptCode, `${year}-${month}`]
+    );
+
+    const sequence = String(parseInt(countResult.rows[0].count) + 1).padStart(3, '0');
+
+    // Final ID format
+    const id = `${deptCode}/${year}/${month}/${sequence}`;
+
+    // Insert feedback with custom ID
     const result = await pool.query(
-      `INSERT INTO feedback (email, name, category, communication, diversity, leadership, foodservice, recognition, message)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-       RETURNING *`,
-      [email, name, category, communication, diversity, leadership, foodservice, recognition, message]
+      `INSERT INTO feedback 
+      (id, userid, email, name, category, communication, diversity, leadership, foodservice, recognition, message)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11)
+      RETURNING *`,
+      [id, userid, email, name, category, communication, diversity, leadership, foodservice, recognition, message]
     );
 
     res.json(result.rows[0]);
   } catch (err) {
-    console.error('INSERT ERROR:', err.stack);  // full error stack
+    console.error('INSERT ERROR:', err.stack);
     res.status(500).json({ error: 'Server error' });
   }
 });

@@ -47,7 +47,7 @@ router.post(
     try {
       // Query user by email selecting explicit fields including role
       const userResult = await pool.query(
-        'SELECT automated_id, id, name, email, phone, password, role FROM users WHERE email = $1',
+        'SELECT serial_id, id, name, email, phone, password, role FROM users WHERE email = $1',
         [email]
       );
 
@@ -64,7 +64,7 @@ router.post(
       }
 
       // Sign JWT token with user emp_id
-      const token = sign({ userId: user.emp_id }, JWT_SECRET, { expiresIn: '1h' });
+      const token = sign({ userId: user.serial_id }, JWT_SECRET, { expiresIn: '1h' });
 
       // Return user info including role (excluding password)
       const { password: _, ...userWithoutPassword } = user;
@@ -82,7 +82,7 @@ router.get('/protected', authMiddleware, async (req, res) => {
   try {
     // Fetch user info including role by emp_id from req.user
     const { rows } = await pool.query(
-      'SELECT emp_id, id, name, email, phone, role FROM users WHERE emp_id = $1',
+      'SELECT serial_id, id, name, email, phone, role FROM users WHERE serial_id = $1',
       [req.user]
     );
 

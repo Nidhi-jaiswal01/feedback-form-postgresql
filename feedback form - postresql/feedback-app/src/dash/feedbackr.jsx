@@ -201,6 +201,10 @@ useEffect(() => {
                     {item.category}
                   </p>
                   <p className="mt-4">
+                    <span className="font-semibold">Feedback Id:</span>{" "}
+                    {item.id}
+                  </p>
+                  <p className="mt-4">
                     <span className="font-semibold">Email:</span>{" "} {item.email}
                   </p>
                   <p className="mt-4">

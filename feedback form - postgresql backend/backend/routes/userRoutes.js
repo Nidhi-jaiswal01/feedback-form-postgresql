@@ -31,7 +31,7 @@ router.post('/login', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const result = await pool.query(`SELECT 
-  u.id, u.name, u.email, u.phone, u.address, u.dob,
+  u.serial_id,u.id, u.name, u.email, u.phone, u.address, u.dob,
   CASE WHEN f.email IS NOT NULL THEN true ELSE false END AS has_submitted_feedback
 FROM users u
 LEFT JOIN feedback f ON u.email = f.email
@@ -48,13 +48,9 @@ router.get('/all', async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT 
-        u.id, u.name, u.email, u.phone, u.address, u.dob,
-        CASE 
-          WHEN f.email IS NOT NULL THEN true
-          ELSE false
-        END AS has_submitted_feedback
-      FROM users u
-      LEFT JOIN feedback f ON u.email = f.email
+  u.serial_id, u.id, u.name, u.email, u.phone, u.address, u.dob
+FROM users u
+INNER JOIN feedback f ON u.email = f.email
     `);
 
     res.json(result.rows);
@@ -68,7 +64,7 @@ router.get('/all', async (req, res) => {
 router.get('/not', async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT u.id, u.name, u.email, u.phone, u.address, u.dob
+      SELECT u.serial_id,u.id, u.name, u.email, u.phone, u.address, u.dob
       FROM users u
       WHERE NOT EXISTS (
         SELECT 1 FROM feedback f WHERE f.email = u.email
@@ -89,7 +85,7 @@ router.get('/:email', async (req, res) => {
 
   try {
     const result = await pool.query(
-      'SELECT id, name, email, phone, address, dob FROM users WHERE email = $1',
+      'SELECT serial_id, id, name, email, phone, address, dob FROM users WHERE email = $1',
       [email]
     );
 

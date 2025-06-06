@@ -17,7 +17,6 @@ function Signup() {
   const [phone, setPhone] = useState("");
   const [address, setAddress]=useState("");
   const[Id,setId]= useState("");
-
   const navigate = useNavigate();
 
 const handleSignup = async (e) => {
@@ -29,39 +28,26 @@ const handleSignup = async (e) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name: Name,
-        Id,
-        dob,
-        phone,
-        address,
-        email,
-        password,
+        Id,dob,phone,address,email,password,
       }),
     });
-
     if (!response.ok) {
       let errorData;
       try {
         errorData = await response.json();
-      } catch {
+        } catch {
         errorData = { message: response.statusText || 'Signup failed' };
       }
-      throw new Error(errorData.message || 'Signup failed');
-    }
-
+      throw new Error(errorData.message || 'Signup failed');}
     const data = await response.json();
-
-    // Save token in localStorage
-    localStorage.setItem('token', data.token);
-
-    // Navigate to the feedback page or dashboard
+    localStorage.setItem("token", data.token);
+localStorage.setItem('userEmail', data.user.email);
     navigate('/feedback');
   } catch (error) {
     alert(error.message);
     console.error('Signup error:', error);
   } finally {
-    setLoading(false);
-  }
-};
+    setLoading(false);}};
 
   return (
     <> <div className="flex md:flex-row justify-center  px-4">

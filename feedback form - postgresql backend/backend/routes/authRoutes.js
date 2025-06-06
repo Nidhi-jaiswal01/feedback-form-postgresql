@@ -9,7 +9,6 @@ const { sign, verify } = pkg;
 import pool from '../db.js';
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_here';
 
-// Registration Route (POST /api/auth)
 router.post(
   "/",
   [
@@ -28,10 +27,10 @@ router.post(
     }
 
     const { email, password, name, dob, address, phone, Id } = req.body;
-    const role = 'user'; // default role assigned on registration
+    const role = 'user'; // default role
 
     try {
-      // Check if user exists by email or employee ID
+      // Check if user already exists by email or Id
       const userExists = await pool.query(
         "SELECT * FROM users WHERE email = $1 OR Id = $2",
         [email, Id]
@@ -40,26 +39,42 @@ router.post(
         return res.status(400).json({ message: "User already exists" });
       }
 
-      // Hash password
+      // Generate serial_id: YY/MM/nnn
+      const now = new Date();
+      const year = now.getFullYear().toString().slice(-2); // "24"
+      const month = String(now.getMonth() + 1).padStart(2, '0'); // "06"
+      const period = `${year}/${month}`;
+
+      const countRes = await pool.query(
+        `SELECT COUNT(*) FROM users WHERE TO_CHAR(created_at, 'YY/MM') = $1`,
+        [period]
+      );
+
+      const count = parseInt(countRes.rows[0].count, 10) + 1;
+      const sequence = String(count).padStart(3, '0');
+      const serial_id = `${period}/${sequence}`; 
+
       const salt = await genSalt(10);
       const hashedPassword = await hash(password, salt);
 
-      // Insert user with role
+      // Insert user, return id (primary key) too
       const newUser = await pool.query(
-        `INSERT INTO users (email, password, name, dob, address, phone, Id, role)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-         RETURNING automated_id, id, email, name, dob, address, phone, Id, role, created_at`,
-        [email, hashedPassword, name, dob, address, phone, Id, role]
+        `INSERT INTO users (email, password, name, dob, address, phone, Id, role, serial_id)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+         RETURNING id, email, name, dob, address, phone, Id, role, serial_id, created_at`,
+        [email, hashedPassword, name, dob, address, phone, Id, role, serial_id]
       );
 
       const user = newUser.rows[0];
-      // Create JWT token with userId (emp_id)
-      const token = sign({ userId: user.emp_id }, JWT_SECRET, { expiresIn: "1h" });
 
-      // Respond with token and user info (including role)
+      // Use JWT_SECRET variable here (not process.env.JWT_SECRET directly)
+      const token = sign({ userId: user.id, email: user.email }, JWT_SECRET, {
+        expiresIn: "1h",
+      });
+
       res.json({ token, user });
     } catch (err) {
-      console.error(err.message);
+      console.error("Registration error:", err.message);
       res.status(500).json({ message: "Server error" });
     }
   }
@@ -77,22 +92,29 @@ router.get("/me", async (req, res) => {
 
   try {
     const decoded = verify(token, JWT_SECRET);
-    const userEmail = decoded.email;  // <-- get email from token
+    const userId = decoded.userId || decoded.id;  // fallback on id if userId not found
+    if (!userId) {
+      return res.status(401).json({ message: "Invalid token payload" });
+    }
 
     const { rows } = await pool.query(
-      "SELECT emp_id, id, email, name, phone, role FROM users WHERE email = $1",
-      [userEmail]    // query by email now
+      "SELECT serial_id, id, email, name, phone, role FROM users WHERE id = $1",
+      [userId]
     );
 
     if (rows.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json(rows[0]);
+    res.json({ user: rows[0] });
   } catch (err) {
     console.error("Error verifying token:", err);
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Token expired" });
+    }
     res.status(401).json({ message: "Invalid token" });
   }
 });
+
 
 export default router;

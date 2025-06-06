@@ -21,7 +21,7 @@ function Dashboard() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [id, setId] = useState("");
+  const [serial_id, setId] = useState("");
   const [address, setAddress] = useState("");
   const [date, setDate] = useState("");
   const [profiles, setProfiles] = useState([]);
@@ -79,10 +79,9 @@ useEffect(() => {
       // Find matched profile of current user
       const matchedProfile = profilesData.find(profile => profile.email === currentEmail);
       if (matchedProfile) {
-        setId(matchedProfile.id); 
-        setName(matchedProfile.name);      // use lowercase keys, consistent with your DB schema
-        setPhone(matchedProfile.phone);
-        setId(matchedProfile.Id);          // If your DB column is uppercase 'Id', keep it, otherwise lowercase 'id'
+        setId(matchedProfile.serial_id); 
+        setName(matchedProfile.name);      
+        setPhone(matchedProfile.phone);       
         setAddress(matchedProfile.address);
         setDate(matchedProfile.dob);
       }
@@ -209,6 +208,9 @@ useEffect(() => {
       <h1 className="font-bold mb-2">User Profile</h1>
       <hr className="border-t border-gray-600" />
     </div>
+     {profiles.length === 0 ? (
+                    <p className="text-gray-500 ml-4 mb-4">No Registered User.</p>
+                  ) : (
     <Table aria-label="user profile table">
       <TableHead>
         <TableRow>
@@ -223,9 +225,9 @@ useEffect(() => {
       </TableHead>
       <TableBody>
         {profiles.map((profile) => (
-          <TableRow key={profile.id}>
+          <TableRow key={profile.serial_id}>
             <TableCell component="th" scope="row">{profile.name}</TableCell>
-            <TableCell align="right">{profile.id}</TableCell>
+            <TableCell align="right">{profile.serial_id}</TableCell>
             <TableCell align="right">{profile.address}</TableCell>
             <TableCell align="right">{profile.dob}</TableCell>
             <TableCell align="right">{profile.email}</TableCell>
@@ -240,7 +242,7 @@ useEffect(() => {
           </TableRow>
         ))}
       </TableBody>
-    </Table>
+    </Table>)}
   </TableContainer>
 </div>
       </div>

@@ -151,13 +151,16 @@ const handleSave = async () => {
                 onClick={() => setDropdownOpen(false)} >
                 Feedback Form
               </Link>
-                  <a
-                    href="/login"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                    onClick={() => setDropdownOpen(false)}
-                  >
-                    Log Out
-                  </a>
+                 <Link
+                  to="/login"
+                  onClick={() => {
+                   localStorage.removeItem("token"); // ✅ Clear the old token
+                    setDropdownOpen(false);           // 🔒 Close the dropdown
+                     }}
+                      className="block px-4 py-2 hover:bg-gray-100"
+                       >
+                       Log Out
+                       </Link>
                 </div>
               )}
             </div>
@@ -245,12 +248,16 @@ const handleSave = async () => {
                 onClick={() => setDropdownOpen(false)} >
                 Feedback Form
               </Link>
-                  <a
-                    href="/login"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                    onClick={() => setDropdownOpen(false)} >
-                    Log Out
-                  </a>
+                  <Link
+                  to="/login"
+                  onClick={() => {
+                   localStorage.removeItem("token"); // ✅ Clear the old token
+                    setDropdownOpen(false);           // 🔒 Close the dropdown
+                     }}
+                      className="block px-4 py-2 hover:bg-gray-100"
+                       >
+                       Log Out
+                       </Link>
                 </div>
               )}
             </li>
